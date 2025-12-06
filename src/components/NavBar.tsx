@@ -1,0 +1,80 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import styles from "../styles/Navbar.module.css"; // adjust path if needed
+import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
+
+export default function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // for mobile hamburger
+
+  // Check login status
+  useEffect(() => {
+    const token = localStorage.getItem("token"); 
+    setIsLoggedIn(!!token);
+  }, []);
+
+  return (
+    <nav className={styles.navbar}>
+      {/* Logo */}
+      <div className={styles.logo}>
+        <img src="/logo2.png" width="180" height="50" alt="DriveDeals" />
+      </div>
+
+      {/* Hamburger (mobile only) */}
+      <div className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      {/* Links */}
+      <div className={`${styles.links} ${menuOpen ? styles.show : ""}`}>
+        <Link to="/" className={styles.link} onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/BrowseCars" className={styles.link} onClick={() => setMenuOpen(false)}>Browse Cars</Link>
+
+        {isLoggedIn && (
+          <>
+            <Link to="/myBids" className={styles.link} onClick={() => setMenuOpen(false)}>My Bids</Link>
+            <Link to="/MyAds" className={styles.link} onClick={() => setMenuOpen(false)}>My Ads</Link>
+          </>
+        )}
+
+        {!isLoggedIn ? (
+          <Link to="/login" className={styles.login_link} onClick={() => setMenuOpen(false)}>Login</Link>
+        ) : (
+          <div className={styles.profileMenu}>
+            <button
+              className={styles.profileButton}
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              aria-label="Toggle menu"
+            >
+              <FaUser size={18}/> Profile
+            </button>
+            {dropdownOpen && (
+              <div className={styles.dropdown}>
+                <Link to="/profile" className={styles.dropdownItem} onClick={() => setMenuOpen(false)}>
+                  <FaUser /> My Profile
+                </Link>
+                <Link to="/settings" className={styles.dropdownItem} onClick={() => setMenuOpen(false)}>
+                  <FaCog /> Settings
+                </Link>
+                <div className={styles.dropdownDivider}></div>
+                <button
+                  className={`${styles.dropdownItem} ${styles.logout}`}
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    setIsLoggedIn(false);
+                    setMenuOpen(false);
+                  }}
+                >
+                  <FaSignOutAlt /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}

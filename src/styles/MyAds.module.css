@@ -1,0 +1,326 @@
+/* ---------- MAIN CONTAINER ---------- */
+.container {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  text-align: center;
+  background: linear-gradient(#090979, #2534b3, #0652a9);
+  padding: 6rem 2rem; /* responsive padding */
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.searchInput {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  height: 50px;
+  width: 400px;
+  max-width: 100%; /* ✅ mobile responsive */
+  font-size: 14px;
+  color: #fff;
+  background: linear-gradient(#020024, #090979, #2534b3);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.createButton {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: large;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.createButton:hover {
+  background: #1d4ed8;
+}
+
+/* ---------- ADS GRID ---------- */
+/* One ad per row */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Card layout: image/details left, price/button right */
+.card {
+  background: white;
+  border-radius: 12px;
+  margin: 0rem 10rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Left section (image + text) */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.thumbnail {
+  width: 275px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.details h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #374151;
+}
+
+
+.location {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* Right section (price + button) */
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.viewButton {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1.3rem;
+  transition: 0.3s;
+}
+
+.viewButton:hover {
+  background: #1d4ed8;
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 640px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .right {
+    align-items: flex-start;
+  }
+
+  .thumbnail {
+    width: 100%;
+    height: 180px;
+  }
+}
+
+/* ---------- POPUP / FORM ---------- */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: black;
+  background: rgba(31, 41, 55, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem; /* ✅ mobile padding */
+}
+
+.popup {
+  background: #f9fafb;
+  padding: 30px;
+  border-radius: 16px;
+  width: 700px;
+  max-width: 100%;
+  max-height: 90vh;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-in-out;
+  scrollbar-width: none;
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #6b7280;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.closeButton:hover {
+  color: #111827;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formGroup label {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+/* ---------- FORM STYLING ---------- */
+.adForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-top: 10px;
+  gap: 15px;
+}
+
+.adForm input,
+.adForm select,
+.adForm textarea {
+  width: 100%;
+  margin: 2px;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  background-color: white;
+  color: #1f2937;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.adForm input:focus,
+.adForm select:focus,
+.adForm textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.adForm textarea.fullWidth {
+  width: 100%; /* ✅ responsive fix */
+}
+
+.features {
+  color: black;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.features label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  background: #e0f2fe;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.features input[type="checkbox"] {
+  accent-color: #2563eb;
+}
+
+.features label:hover {
+  background: #bae6fd;
+}
+
+.submitButton {
+  background: #10b981;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.3s;
+  margin-top: 10px;
+  grid-column: 1 / -1;
+}
+
+.submitButton:hover {
+  background: #059669;
+}
+
+/* ---------- RESPONSIVE FIXES ---------- */
+@media (max-width: 640px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .header {
+    padding: 3rem 1rem;
+  }
+
+  .popup {
+    padding: 20px;
+  }
+}
