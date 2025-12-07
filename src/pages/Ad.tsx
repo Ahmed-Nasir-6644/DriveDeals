@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // <-- React Router
 import styles from "../styles/AdDetail.module.css";
 import ImageSlider from "../components/ImageSlider";
+// socket client
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3000");
 
 interface Ad {
   id: number;
@@ -35,22 +38,23 @@ export default function AdDetailPage() {
   const [ad, setAd] = useState<Ad | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  // Bidding state
+  const [bids, setBids] = useState<Array<{ user: string; amount: number; time: string }>>([]);
+  const [newBid, setNewBid] = useState<number | "">("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<string>("");
+  const [bidsLoading, setBidsLoading] = useState(false);
+  const [showNewBidBanner, setShowNewBidBanner] = useState(false);
 
   useEffect(() => {
+
     async function fetchAd() {
       try {
-        console.log(`${id}`);
-        const res = await fetch(`http://localhost:3000/ads/get/adById/${id}`, {
-          method: "GET",
-        });
-
+        const res = await fetch(`http://localhost:3000/ads/get/adById/${id}`);
         if (!res.ok) throw new Error("Failed to fetch ad");
-
         const data = await res.json();
-
         let parsedFeatures: string[] = [];
-
-        // Parse features properly
         if (typeof data.features === "string") {
           try {
             parsedFeatures = JSON.parse(data.features);
@@ -65,7 +69,6 @@ export default function AdDetailPage() {
         } else if (Array.isArray(data.features)) {
           parsedFeatures = data.features;
         }
-
         setAd(data);
         setFeatures(parsedFeatures);
       } catch (err) {
@@ -74,9 +77,131 @@ export default function AdDetailPage() {
         setLoading(false);
       }
     }
-
-    if (id) fetchAd();
+    async function fetchBids() {
+      if (!id) return;
+      setBidsLoading(true);
+      try {
+        const res = await fetch(`http://localhost:3000/bids/get/byAd/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch bids");
+        const data = await res.json();
+        // Expecting array of { user, amount, time }
+        setBids(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setBids([]);
+      } finally {
+        setBidsLoading(false);
+      }
+    }
+    function joinRoom(){
+      socket.emit("joinRoom", {adId: id});
+    }
+    if (id) {
+      fetchAd();
+      fetchBids();
+      joinRoom();
+    }
   }, [id]);
+
+  useEffect(() => {
+    function handleNewBid(_bid: { user: string; amount: number; time: string }) {
+      // Optionally update bids instantly here if you want real-time
+      setShowNewBidBanner(true);
+      setTimeout(() => setShowNewBidBanner(false), 10000);
+      setBids((prevBids) => [...prevBids, _bid]);
+          console.log(_bid);
+
+    }
+    socket.on("new_bid", handleNewBid);
+    return () => {
+      socket.off("new_bid", handleNewBid);
+    };
+  }, []);
+
+
+  // Setup a default auction end time: try ad.auction_ends_at else 24 hours after created_at
+  useEffect(() => {
+    if (!ad) return;
+
+    let end = null as Date | null;
+    // If API provides an auction end field, use it (assumption). Otherwise, default to 24 hours after created_at
+    // Assumption: ad.auction_ends_at may be present as ISO string. If not, fallback.
+    // Note: If you have a server-provided auction end, replace this logic to use that value.
+    // @ts-ignore
+    if (ad.auction_ends_at) {
+      // @ts-ignore
+      end = new Date(ad.auction_ends_at);
+    } else {
+      end = new Date(ad.created_at);
+      end.setHours(end.getHours() + 24);
+    }
+
+    function update() {
+      const diff = end!.getTime() - Date.now();
+      if (diff <= 0) {
+        setTimeLeft("Auction ended");
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      setTimeLeft(
+        `${days}d ${String(hours).padStart(2, "0")}h:${String(minutes).padStart(2, "0")}m:${String(seconds).padStart(2, "0")}s`
+      );
+    }
+
+    update();
+    const t = setInterval(update, 1000);
+    return () => clearInterval(t);
+  }, [ad]);
+
+  // Helpers for bidding
+  const highestBid = bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : ad?.price ?? 0;
+  const minIncrement = 0.1; // minimum increment (in same units as `ad.price`, e.g., lacs)
+  const minBid = parseFloat((Math.max(highestBid, ad?.price ?? 0) + minIncrement).toFixed(2));
+
+  async function handlePlaceBid(e: React.FormEvent) {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) return alert("You must be logged in to place a bid");
+    setError(null);
+    setSuccess(null);
+
+    if (newBid === "") {
+      setError(`Please enter a bid of at least ${minBid}`);
+      return;
+    }
+
+    const val = Number(newBid);
+    if (isNaN(val) || val < minBid) {
+      setError(`Bid must be a number and at least ${minBid}`);
+      return;
+    }
+
+    const user = "You"; // Placeholder: replace with logged-in user's name when available
+    try {
+      const res = await fetch(`http://localhost:3000/bids/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adId: id, user, amount: val })
+      });
+      if (!res.ok) throw new Error("Failed to place bid");
+      setSuccess("Bid placed successfully");
+      setNewBid("");
+      // Update bids
+      socket.emit("place_bid", { adId: id, user, amount: val, time: Date.now() });
+      // Refresh bids
+      const bidsRes = await fetch(`http://localhost:3000/bids/get/byAd/${id}`);
+      if (bidsRes.ok) {
+        const data = await bidsRes.json();
+        setBids(Array.isArray(data) ? data : []);
+      }
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError("Failed to place bid. Try again.");
+    }
+
+  }
 
   if (loading) return <p className={styles.message}>Loading...</p>;
   if (!ad) return <p className={styles.message}>Ad not found.</p>;
@@ -95,6 +220,83 @@ export default function AdDetailPage() {
       {ad.images && ad.images.length > 0 && (
         <ImageSlider images={ad.images} />
       )}
+
+      {/* Bidding Section */}
+      <section className={styles.bidSection}>
+        {/* NEW BID Banner */}
+        {showNewBidBanner && (
+          <div className={styles.newBidBanner}>
+            <span className={styles.newBidText}>NEW BID!</span>
+          </div>
+        )}
+        <div className={styles.bidHeader}>
+          <h2>Live Auction</h2>
+          <div className={styles.timer} aria-live="polite">{timeLeft}</div>
+        </div>
+
+        <div className={styles.bidContent}>
+          <div className={styles.topBids}>
+            <h3>Top Bids</h3>
+            <table className={styles.bidsTable}>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Bidder</th>
+                  <th>Amount (lacs)</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bidsLoading ? (
+                  <tr><td colSpan={4} className={styles.noBids}>Loading bids...</td></tr>
+                ) : bids.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className={styles.noBids}>No bids yet</td>
+                  </tr>
+                ) : (
+                  bids
+                    .slice()
+                    .sort((a, b) => b.amount - a.amount)
+                    .slice(0, 3)
+                    .map((b, idx) => (
+                      <tr key={idx}>
+                        <td>{idx + 1}</td>
+                        <td>{b.user}</td>
+                        <td>{b.amount}</td>
+                        <td>{new Date(b.time).toLocaleString()}</td>
+                      </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className={styles.placeBid}>
+            <h3>Place a New Bid</h3>
+            <form onSubmit={handlePlaceBid} className={styles.bidForm}>
+              <label className={styles.minNote}>
+                Minimum bid: <strong>{minBid} lacs</strong>
+              </label>
+              <input
+                type="number"
+                step={0.1}
+                min={minBid}
+                value={newBid}
+                onChange={(e) => setNewBid(e.target.value === "" ? "" : Number(e.target.value))}
+                className={styles.bidInput}
+                aria-label="Enter your bid in lacs"
+              />
+
+              <div className={styles.formRow}>
+                <button type="submit" className={styles.bidButton}>Place bid</button>
+              </div>
+
+              {error && <div className={styles.error}>{error}</div>}
+              {success && <div className={styles.success}>{success}</div>}
+            </form>
+          </div>
+        </div>
+      </section>
 
       {/* Details Table */}
       <div className={styles.details}>
