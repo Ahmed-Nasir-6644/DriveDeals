@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Login.module.css";
 import logo from "../assets/logo.png"
+import { useAuth } from "../context/AuthContext";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Login: React.FC = () => {
   const [step, setStep] = useState<"login" | "otp">("login");
   const [tempToken, setTempToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setEmail: setAuthEmail } = useAuth();
 
   // Step 1: Login with email + password
   const handleLoginSetup = async (e: React.FormEvent) => {
@@ -55,6 +57,7 @@ const Login: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem("token", data.accessToken);
+        setAuthEmail(email);
         alert("Login successful");
         navigate("/"); // redirect to home page
       } else {

@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/Navbar.module.css"; // adjust path if needed
 import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // for mobile hamburger
+  const { email, logout } = useAuth();
 
   // Check login status
   useEffect(() => {
     const token = localStorage.getItem("token"); 
     setIsLoggedIn(!!token);
-  }, []);
+  }, [email]);
 
   return (
     <nav className={styles.navbar}>
@@ -63,7 +65,7 @@ export default function Navbar() {
                 <button
                   className={`${styles.dropdownItem} ${styles.logout}`}
                   onClick={() => {
-                    localStorage.removeItem("token");
+                    logout();
                     setIsLoggedIn(false);
                     setMenuOpen(false);
                   }}
