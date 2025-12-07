@@ -24,8 +24,8 @@ const Footer: React.FC = () => {
 
         <div className={styles.right}>
           <h3>Contact</h3>
-          <p>Email: support@drivedeals.com</p>
-          <p>Phone: +92 300 1234567</p>
+          <p>Email: drive.deals.pk@gmail.com</p>
+          <p>Phone: +92 307 2003111</p>
           <p>Address: Lahore, Pakistan</p>
         </div>
       </div>
