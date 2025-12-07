@@ -18,7 +18,7 @@ export default function Navbar() {
     <nav className={styles.navbar}>
       {/* Logo */}
       <div className={styles.logo}>
-        <img src="/logo2.png" width="180" height="50" alt="DriveDeals" />
+        <img src="../assets/logo2.png" width="180" height="50" alt="DriveDeals" />
       </div>
 
       {/* Hamburger (mobile only) */}
@@ -30,8 +30,10 @@ export default function Navbar() {
 
       {/* Links */}
       <div className={`${styles.links} ${menuOpen ? styles.show : ""}`}>
+        <Link to='/AboutUs' className={styles.link} onClick={()=> setMenuOpen(false)}>About Us</Link>
         <Link to="/" className={styles.link} onClick={() => setMenuOpen(false)}>Home</Link>
         <Link to="/BrowseCars" className={styles.link} onClick={() => setMenuOpen(false)}>Browse Cars</Link>
+        
 
         {isLoggedIn && (
           <>

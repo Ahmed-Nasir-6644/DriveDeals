@@ -10,6 +10,7 @@ import AdDetailPage from "./pages/Ad";
 import VerifiedSuccess from "./pages/verify-success";
 import VerifyFailed from "./pages/verify-failed";
 import MyAdsPage from "./pages/Myads";
+import AboutUs from "./pages/AboutUS";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
         <Route path="/ad/:id" element={<AdDetailPage />} />
         <Route path="/verify-success" element={<VerifiedSuccess />} />
         <Route path="/verify-failed" element={<VerifyFailed />} />
-        <Route path='/myAds' element={<MyAdsPage/>} />
+        <Route path="/myAds" element={<MyAdsPage />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
       </Routes>
       <Footer />
     </>
