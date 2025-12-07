@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "../styles/Navbar.module.css"; // adjust path if needed
 import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo2.PNG";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +21,7 @@ export default function Navbar() {
     <nav className={styles.navbar}>
       {/* Logo */}
       <div className={styles.logo}>
-        <img src="../assets/logo2.png" width="180" height="50" alt="DriveDeals" />
+        <img src={logo} width="350" height="70" alt="DriveDeals" />
       </div>
 
       {/* Hamburger (mobile only) */}
