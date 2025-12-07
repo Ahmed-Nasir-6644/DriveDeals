@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // <-- React Router
+import { useParams, Link } from "react-router-dom"; // <-- React Router
 import styles from "../styles/AdDetail.module.css";
 import ImageSlider from "../components/ImageSlider";
 
@@ -30,11 +30,28 @@ interface Ad {
   };
 }
 
+interface Recommendation {
+  id: number;
+  make: string;
+  model: string;
+  variant: string;
+  model_year: number;
+  mileage: number;
+  price: number;
+  location: string;
+  description: string;
+  features: string;
+  pictures: string;
+  score: number;
+}
+
 export default function AdDetailPage() {
   const { id } = useParams(); // <-- Works in React now
   const [ad, setAd] = useState<Ad | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recsLoading, setRecsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchAd() {
@@ -68,10 +85,61 @@ export default function AdDetailPage() {
 
         setAd(data);
         setFeatures(parsedFeatures);
+
+        // Fetch recommendations
+        await fetchRecommendations(data);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
+      }
+    }
+
+    async function fetchRecommendations(adData: Ad) {
+      try {
+        setRecsLoading(true);
+        const payload = {
+          ad: {
+            make: adData.make,
+            model: adData.model,
+            variant: adData.variant,
+            model_year: adData.model_year,
+            mileage: adData.mileage,
+            price: adData.price * 100000, // Convert lacs to full price
+            location: adData.location,
+          },
+          top_k: 5,
+          limit: 200,
+        };
+
+        console.log("Sending payload to recommendation API:", payload);
+
+        const res = await fetch("http://localhost:5000/recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        console.log("Recommendations API response status:", res.status);
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("API error response:", errorText);
+          throw new Error(`Failed to fetch recommendations: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("Recommendations data received:", data);
+        // Filter out the current ad from recommendations
+        const filteredResults = (data.results || []).filter(
+          (rec: Recommendation) => rec.id !== adData.id
+        );
+        setRecommendations(filteredResults);
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+        setRecommendations([]);
+      } finally {
+        setRecsLoading(false);
       }
     }
 
@@ -168,6 +236,46 @@ export default function AdDetailPage() {
         <p className={styles.date}>
           Posted on {new Date(ad.created_at).toDateString()}
         </p>
+      </div>
+
+      {/* Recommendations Section */}
+      <div className={styles.recommendationsSection}>
+        <h2 className={styles.subtitle}>Recommended Cars</h2>
+        {recsLoading ? (
+          <p className={styles.message}>Loading recommendations...</p>
+        ) : recommendations.length > 0 ? (
+          <div className={styles.recommendationsGrid}>
+            {recommendations.map((rec) => (
+              <div key={rec.id} className={styles.recCard}>
+                {rec.pictures && (
+                  <img
+                    src={rec.pictures.split(",")[0]}
+                    alt={`${rec.make} ${rec.model}`}
+                    className={styles.recImage}
+                  />
+                )}
+                <div className={styles.recContent}>
+                  <h3 className={styles.recTitle}>
+                    {rec.make} {rec.model} {rec.variant}
+                  </h3>
+                  <p className={styles.recPrice}>PKR {rec.price} lacs</p>
+                  <p className={styles.recDetails}>
+                    {rec.model_year} • {rec.mileage} km
+                  </p>
+                  <p className={styles.recLocation}>📍 {rec.location}</p>
+                  {/* <p className={styles.recScore}>
+                    Match Score: {(rec.score * 100).toFixed(0)}%
+                  </p> */}
+                  <Link to={`/ad/${rec.id}`} className={styles.recButton}>
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.message}>No recommendations available</p>
+        )}
       </div>
     </div>
   );
