@@ -306,6 +306,23 @@
   }
 }
 
+.pdfButton {
+  background: #2563eb;
+  padding: 12px 20px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s ease;
+}
+
+.pdfButton:hover {
+  background: #1d4ed8;
+}
+
+
 /* Recommendations Section */
 .recommendationsSection {
   margin: 2rem 19rem;

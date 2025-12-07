@@ -1,132 +1,136 @@
 .container {
   min-height: 100vh;
-  background: #f9fafb;
+  background: #f5f7fa;
 }
 
 /* HEADER */
 .header {
   text-align: center;
-  background: linear-gradient(#090979, #2534B3, #0652A9);
-  padding: 6rem;
+  background: linear-gradient(135deg, #0f1c8f, #0066cc);
+  padding: 4rem 1rem;
   margin-bottom: 2rem;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #fff;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
 }
 
 .subtitle {
-  color: #fff;
-}
-
-/* SEARCH */
-.searchInput {
-  margin-top: 2rem;
-  padding: 0.8rem 1rem;
-  width: 100%; /* mobile te full width */
-  max-width: 300px;
-  color: white;
-  background: linear-gradient(#020024, #090979, #2534B3);
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
   font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s;
+  opacity: 0.85;
+  color: #dce6ff;
 }
 
-.searchInput:focus {
-  border-color: #2563eb;
+/* SECTION TITLE */
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
 }
 
-.searchButton {
-  margin-left: 0.3rem;
-  background: #2563eb;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s;
+/* SLIDER */
+.sliderWrapper {
+  margin-bottom: 3rem;
+  padding-left: 75px;
+  padding-right: 75px;
 }
 
-.searchButton:hover {
-  background: #1d4ed8;
+.slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
+  scroll-behavior: smooth;
 }
 
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+.slider::-webkit-scrollbar {
+  display: none;
 }
 
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* CARD */
-.card {
+/* SLIDER CARD — BIGGER SIZE */
+.slideCard {
+  min-width: 320px;        /* bigger width */
+  height: 260px;           /* increased total height */
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
   text-decoration: none;
   color: inherit;
-  transition: box-shadow 0.2s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.slideCard:hover {
+  transform: scale(1.07);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+/* CARD IMAGE BIGGER */
+.slideImage {
+  width: 100%;
+  height: 170px;        /* larger image */
+  object-fit: cover;
+}
+
+/* TEXT AREA IMPROVED */
+.slideText {
+  padding: 1rem;
+}
+
+.slideText h3 {
+  font-size: 1.15rem;   /* bigger title */
+  font-weight: 700;
+}
+
+.slideText p {
+  font-size: 1rem;      /* bigger price */
+  font-weight: 600;
+  color: #2563eb;
+}
+
+
+/* GRID BUTTONS */
+.grid {
+  display: grid;
+  padding: 1rem;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.card {
+  background: white;
+  margin: 0px 75px 0px 75px;
+  padding: 2.2rem;                 /* increased padding for bigger height */
+  min-height: 220px;    
+  min-width: 400px;           /* ensures higher card */
+  border-radius: 18px;             /* more premium */
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;         /* center text nicely */
+  
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
 }
 
 .card h2 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #374151;
+  font-size: 1.6rem;               /* bigger heading */
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  color: #1f2937;
 }
 
 .card p {
+  font-size: 1.05rem;              /* slightly bigger subtext */
+  font-weight: 400;
   color: #6b7280;
-}
-
-/* ============= MOBILE FIXES ============= */
-@media (max-width: 640px) {
-  .header {
-    padding: 3rem 1rem; /* chhoti screen layi padding ghat */
-  }
-
-  .title {
-    font-size: 1.5rem; /* title chhota */
-  }
-
-  .subtitle {
-    font-size: 0.9rem; /* subtitle vi adjust */
-  }
-
-  .searchInput {
-    width: 90%; /* mobile te input full width */
-    margin: 1rem auto;
-    display: block;
-  }
-
-  .searchButton {
-    width: 90%;
-    margin: 0.5rem auto 0;
-    display: block;
-    text-align: center;
-  }
 }

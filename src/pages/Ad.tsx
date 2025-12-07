@@ -149,6 +149,94 @@ export default function AdDetailPage() {
   if (loading) return <p className={styles.message}>Loading...</p>;
   if (!ad) return <p className={styles.message}>Ad not found.</p>;
 
+  const downloadPDF = async () => {
+    const { jsPDF } = await import("jspdf");
+    const html2canvas = (await import("html2canvas")).default;
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    pdf.setFont("Helvetica");
+
+    let y = 10;
+
+    // ---- Title ----
+    pdf.setFontSize(20);
+    pdf.text(`${ad.make} ${ad.model} ${ad.variant}`, 10, y);
+    y += 10;
+
+    // ---- Price ----
+    pdf.setFontSize(14);
+    pdf.text(`Price: PKR ${ad.price} lacs`, 10, y);
+    y += 10;
+
+    // ---- Car Images ----
+    for (const img of ad.images) {
+      try {
+        const imgElement = new Image();
+        imgElement.crossOrigin = "anonymous";
+        imgElement.src = img;
+
+        await new Promise((resolve) => (imgElement.onload = resolve));
+
+        const canvas = await html2canvas(imgElement);
+        const imgData = canvas.toDataURL("image/jpeg");
+
+        const imgWidth = 180;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        if (y + imgHeight > 280) {
+          pdf.addPage();
+          y = 10;
+        }
+
+        pdf.addImage(imgData, "JPEG", 10, y, imgWidth, imgHeight);
+        y += imgHeight + 10;
+      } catch (err) {
+        console.error("Error loading image:", err);
+      }
+    }
+
+    // ---- Text Details ----
+    const text = `
+Mileage: ${ad.mileage} km
+Model Year: ${ad.model_year}
+Transmission: ${ad.transmission}
+Fuel Type: ${ad.fuel_type}
+Color: ${ad.color}
+Location: ${ad.location}
+Registered In: ${ad.registered_in}
+Posted By: ${ad.owner?.first_name ?? "Unknown"} ${ad.owner?.last_name}
+Posted On: ${new Date(ad.created_at).toDateString()}
+  `;
+
+    pdf.setFontSize(12);
+
+    const lines = pdf.splitTextToSize(text, 180);
+    if (y + lines.length * 7 > 280) {
+      pdf.addPage();
+      y = 10;
+    }
+
+    pdf.text(lines, 10, y);
+    y += lines.length * 7 + 10;
+
+    // ---- Description ----
+    const descLines = pdf.splitTextToSize(
+      `Description:\n${ad.description}`,
+      180
+    );
+
+    if (y + descLines.length * 7 > 280) {
+      pdf.addPage();
+      y = 10;
+    }
+
+    pdf.text(descLines, 10, y);
+
+    // ---- Save ----
+    pdf.save(`${ad.make}-${ad.model}-${ad.model_year}.pdf`);
+  };
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -160,9 +248,7 @@ export default function AdDetailPage() {
       </section>
 
       {/* Image slider */}
-      {ad.images && ad.images.length > 0 && (
-        <ImageSlider images={ad.images} />
-      )}
+      {ad.images && ad.images.length > 0 && <ImageSlider images={ad.images} />}
 
       {/* Details Table */}
       <div className={styles.details}>
@@ -236,6 +322,9 @@ export default function AdDetailPage() {
         <p className={styles.date}>
           Posted on {new Date(ad.created_at).toDateString()}
         </p>
+        <button className={styles.pdfButton} onClick={downloadPDF}>
+          Download Ad
+        </button>
       </div>
 
       {/* Recommendations Section */}
