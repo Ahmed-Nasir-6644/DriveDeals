@@ -53,8 +53,6 @@ export default function AdDetailPage() {
   const [ad, setAd] = useState<Ad | null>(null);
   const [features, setFeatures] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [recsLoading, setRecsLoading] = useState(false);
   // Bidding state
   const [bids, setBids] = useState<Array<{ user: string; amount: number; time: string }>>([]);
   const [newBid, setNewBid] = useState<number | "">("");
@@ -63,6 +61,8 @@ export default function AdDetailPage() {
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [bidsLoading, setBidsLoading] = useState(false);
   const [showNewBidBanner, setShowNewBidBanner] = useState(false);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recsLoading, setRecsLoading] = useState(false);
 
   useEffect(() => {
 
