@@ -65,7 +65,7 @@ export default function Navbar() {
                   <FaCog /> Settings
                 </Link>
                 <div className={styles.dropdownDivider}></div>
-                <button
+                <Link to="/"
                   className={`${styles.dropdownItem} ${styles.logout}`}
                   onClick={() => {
                     logout();
@@ -74,7 +74,7 @@ export default function Navbar() {
                   }}
                 >
                   <FaSignOutAlt /> Logout
-                </button>
+                </Link>
               </div>
             )}
           </div>
