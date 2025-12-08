@@ -13,6 +13,8 @@ import MyAdsPage from "./pages/Myads";
 import AboutUs from "./pages/AboutUS";
 import MyBids from "./pages/MyBids";
 import ProfilePage from "./pages/Profile";
+import ChatList from "./pages/chatList";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/myBids" element={<MyBids />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/chat-list" element={<ChatList />} />
+        <Route path="/chat/:chatId" element={<ChatPage />} />
       </Routes>
       <Footer />
     </>

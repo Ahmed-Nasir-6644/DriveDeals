@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "../styles/Navbar.module.css"; // adjust path if needed
 import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/logo2.PNG";
+import logo from "../assets/logo2.png";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +42,7 @@ export default function Navbar() {
           <>
             <Link to="/myBids" className={styles.link} onClick={() => setMenuOpen(false)}>My Bids</Link>
             <Link to="/MyAds" className={styles.link} onClick={() => setMenuOpen(false)}>My Ads</Link>
+            <Link to ="/chat-list" className={styles.link} onClick={()=>setMenuOpen(false)}>Chat List</Link>
           </>
         )}
 
