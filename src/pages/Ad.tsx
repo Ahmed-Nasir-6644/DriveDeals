@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom"; // <-- React Router
 import styles from "../styles/AdDetail.module.css";
 import ImageSlider from "../components/ImageSlider";
+import ChatButton from "../components/chatButton";
+import { useAuth } from "../context/AuthContext";
 // socket client
 import { io } from "socket.io-client";
 const socket = io("http://localhost:3000");
@@ -54,7 +56,9 @@ export default function AdDetailPage() {
   const [features, setFeatures] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   // Bidding state
-  const [bids, setBids] = useState<Array<{ user: string; amount: number; time: string }>>([]);
+  const [bids, setBids] = useState<
+    Array<{ user: string; amount: number; time: string }>
+  >([]);
   const [newBid, setNewBid] = useState<number | "">("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -64,8 +68,19 @@ export default function AdDetailPage() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [recsLoading, setRecsLoading] = useState(false);
 
-  useEffect(() => {
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
+  const { email } = useAuth();
 
+  useEffect(() => {
+    if (!email) return;
+
+    fetch(`http://localhost:3000/users/get-by-email?email=${email}`)
+      .then((res) => res.json())
+      .then((user) => setLoggedInUserId(user.id))
+      .catch((err) => console.error("Error fetching logged-in user:", err));
+  }, [email]);
+
+  useEffect(() => {
     async function fetchAd() {
       try {
         const res = await fetch(`http://localhost:3000/ads/get/adById/${id}`);
@@ -162,8 +177,8 @@ export default function AdDetailPage() {
         setBidsLoading(false);
       }
     }
-    function joinRoom(){
-      socket.emit("joinRoom", {adId: id});
+    function joinRoom() {
+      socket.emit("joinRoom", { adId: id });
     }
     if (id) {
       fetchAd();
@@ -173,20 +188,22 @@ export default function AdDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    function handleNewBid(_bid: { user: string; amount: number; time: string }) {
+    function handleNewBid(_bid: {
+      user: string;
+      amount: number;
+      time: string;
+    }) {
       // Optionally update bids instantly here if you want real-time
       setShowNewBidBanner(true);
       setTimeout(() => setShowNewBidBanner(false), 10000);
       setBids((prevBids) => [...prevBids, _bid]);
-          console.log(_bid);
-
+      console.log(_bid);
     }
     socket.on("new_bid", handleNewBid);
     return () => {
       socket.off("new_bid", handleNewBid);
     };
   }, []);
-
 
   // Setup a default auction end time: try ad.auction_ends_at else 24 hours after created_at
   useEffect(() => {
@@ -216,7 +233,10 @@ export default function AdDetailPage() {
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
       setTimeLeft(
-        `${days}d ${String(hours).padStart(2, "0")}h:${String(minutes).padStart(2, "0")}m:${String(seconds).padStart(2, "0")}s`
+        `${days}d ${String(hours).padStart(2, "0")}h:${String(minutes).padStart(
+          2,
+          "0"
+        )}m:${String(seconds).padStart(2, "0")}s`
       );
     }
 
@@ -226,9 +246,12 @@ export default function AdDetailPage() {
   }, [ad]);
 
   // Helpers for bidding
-  const highestBid = bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : ad?.price ?? 0;
+  const highestBid =
+    bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : ad?.price ?? 0;
   const minIncrement = 0.1; // minimum increment (in same units as `ad.price`, e.g., lacs)
-  const minBid = parseFloat((Math.max(highestBid, ad?.price ?? 0) + minIncrement).toFixed(2));
+  const minBid = parseFloat(
+    (Math.max(highestBid, ad?.price ?? 0) + minIncrement).toFixed(2)
+  );
 
   async function handlePlaceBid(e: React.FormEvent) {
     e.preventDefault();
@@ -253,13 +276,18 @@ export default function AdDetailPage() {
       const res = await fetch(`http://localhost:3000/bids/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adId: id, user, amount: val })
+        body: JSON.stringify({ adId: id, user, amount: val }),
       });
       if (!res.ok) throw new Error("Failed to place bid");
       setSuccess("Bid placed successfully");
       setNewBid("");
       // Update bids
-      socket.emit("place_bid", { adId: id, user, amount: val, time: Date.now() });
+      socket.emit("place_bid", {
+        adId: id,
+        user,
+        amount: val,
+        time: Date.now(),
+      });
       // Refresh bids
       const bidsRes = await fetch(`http://localhost:3000/bids/get/byAd/${id}`);
       if (bidsRes.ok) {
@@ -270,7 +298,6 @@ export default function AdDetailPage() {
     } catch (err) {
       setError("Failed to place bid. Try again.");
     }
-
   }
 
   if (loading) return <p className={styles.message}>Loading...</p>;
@@ -387,7 +414,9 @@ Posted On: ${new Date(ad.created_at).toDateString()}
         )}
         <div className={styles.bidHeader}>
           <h2>Live Auction</h2>
-          <div className={styles.timer} aria-live="polite">{timeLeft}</div>
+          <div className={styles.timer} aria-live="polite">
+            {timeLeft}
+          </div>
         </div>
 
         <div className={styles.bidContent}>
@@ -404,10 +433,16 @@ Posted On: ${new Date(ad.created_at).toDateString()}
               </thead>
               <tbody>
                 {bidsLoading ? (
-                  <tr><td colSpan={4} className={styles.noBids}>Loading bids...</td></tr>
+                  <tr>
+                    <td colSpan={4} className={styles.noBids}>
+                      Loading bids...
+                    </td>
+                  </tr>
                 ) : bids.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className={styles.noBids}>No bids yet</td>
+                    <td colSpan={4} className={styles.noBids}>
+                      No bids yet
+                    </td>
                   </tr>
                 ) : (
                   bids
@@ -438,13 +473,17 @@ Posted On: ${new Date(ad.created_at).toDateString()}
                 step={0.1}
                 min={minBid}
                 value={newBid}
-                onChange={(e) => setNewBid(e.target.value === "" ? "" : Number(e.target.value))}
+                onChange={(e) =>
+                  setNewBid(e.target.value === "" ? "" : Number(e.target.value))
+                }
                 className={styles.bidInput}
                 aria-label="Enter your bid in lacs"
               />
 
               <div className={styles.formRow}>
-                <button type="submit" className={styles.bidButton}>Place bid</button>
+                <button type="submit" className={styles.bidButton}>
+                  Place bid
+                </button>
               </div>
 
               {error && <div className={styles.error}>{error}</div>}
@@ -529,6 +568,9 @@ Posted On: ${new Date(ad.created_at).toDateString()}
         <button className={styles.pdfButton} onClick={downloadPDF}>
           Download Ad
         </button>
+        {loggedInUserId && ad.owner.id !== loggedInUserId && (
+          <ChatButton ownerId={ad.owner.id} />
+        )}
       </div>
 
       {/* Recommendations Section */}
