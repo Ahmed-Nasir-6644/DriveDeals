@@ -87,3 +87,28 @@
 .sendBtn:hover {
   background: #2534b3;
 }
+
+
+.myMessage {
+  background: #2563eb;
+  color: white;
+  margin-left: auto;
+  border-radius: 18px 6px 18px 18px;
+  padding: 0.8rem 1rem;
+  max-width: 60%;
+  transition: transform 0.2s ease;
+}
+
+.theirMessage {
+  background: #7ba0ea;
+  color: #1f2937;
+  margin-right: auto;
+  border-radius: 6px 18px 18px 18px;
+  padding: 0.8rem 1rem;
+  max-width: 60%;
+  transition: transform 0.2s ease;
+}
+
+.myMessage:hover, .theirMessage:hover {
+  transform: scale(1.02);
+}
