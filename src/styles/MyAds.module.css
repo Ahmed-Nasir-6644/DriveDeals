@@ -151,6 +151,96 @@
   background: #1d4ed8;
 }
 
+.deleteButton {
+  padding: 6px 12px;
+  background: #f87171;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.deleteButton:hover {
+  background: #ef4444;
+}
+
+.deleteOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 1rem;
+}
+
+.deleteModal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.deleteModal h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.deleteModal p {
+  margin: 0 0 1rem;
+  color: #4b5563;
+}
+
+.deleteError {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+}
+
+.deleteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.cancelDeleteButton {
+  padding: 8px 14px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancelDeleteButton:hover {
+  background: #e5e7eb;
+}
+
+.confirmDeleteButton {
+  padding: 8px 14px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.confirmDeleteButton:hover {
+  background: #dc2626;
+}
+
 /* 📱 Mobile adjustments */
 @media (max-width: 640px) {
   .card {

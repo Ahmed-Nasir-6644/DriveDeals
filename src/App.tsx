@@ -12,6 +12,7 @@ import VerifyFailed from "./pages/verify-failed";
 import MyAdsPage from "./pages/Myads";
 import AboutUs from "./pages/AboutUS";
 import MyBids from "./pages/MyBids";
+import ProfilePage from "./pages/Profile";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/myAds" element={<MyAdsPage />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/myBids" element={<MyBids />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
       <Footer />
     </>
