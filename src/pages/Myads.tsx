@@ -38,6 +38,9 @@ export default function MyAdsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Ad | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const [newAd, setNewAd] = useState({
     make: "",
@@ -80,6 +83,36 @@ export default function MyAdsPage() {
     const car = `${ad.make}${ad.model} ${ad.variant}`;
     return car.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setDeleteError("You must be logged in to delete an ad");
+      return;
+    }
+
+    try {
+      setDeleteLoading(true);
+      setDeleteError("");
+      const res = await fetch(`http://localhost:3000/ads/delete/${deleteTarget.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to delete ad");
+      }
+
+      setAds((prev) => prev.filter((ad) => ad.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete ad");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,11 +223,48 @@ export default function MyAdsPage() {
                 <Link to={`/ad/${ad.id}`} className={styles.viewButton}>
                   View Details
                 </Link>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => {
+                    setDeleteTarget(ad);
+                    setDeleteError("");
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))
         )}
       </section>
+
+      {deleteTarget && (
+        <div className={styles.deleteOverlay}>
+          <div className={styles.deleteModal}>
+            <h3>Delete this ad?</h3>
+            <p>
+              Are you sure you want to delete {deleteTarget.make} {deleteTarget.model} {deleteTarget.variant}?
+            </p>
+            {deleteError && <div className={styles.deleteError}>{deleteError}</div>}
+            <div className={styles.deleteActions}>
+              <button
+                className={styles.cancelDeleteButton}
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.confirmDeleteButton}
+                onClick={handleConfirmDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Popup Form */}
       {showPopup && (

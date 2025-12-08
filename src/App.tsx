@@ -12,6 +12,7 @@ import VerifyFailed from "./pages/verify-failed";
 import MyAdsPage from "./pages/Myads";
 import AboutUs from "./pages/AboutUS";
 import MyBids from "./pages/MyBids";
+import ProfilePage from "./pages/Profile";
 import ChatList from "./pages/chatList";
 import ChatPage from "./pages/ChatPage";
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/myAds" element={<MyAdsPage />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/myBids" element={<MyBids />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/chat-list" element={<ChatList />} />
         <Route path="/chat/:chatId" element={<ChatPage />} />
       </Routes>
