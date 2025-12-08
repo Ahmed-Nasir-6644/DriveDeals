@@ -63,7 +63,7 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (!socket || !chatId) return;
 
-    socket.emit("join_room", chatId);
+    socket.emit("join_chat_room", chatId);
 
     return () => {
       socket.emit("leave_room", chatId);
@@ -110,6 +110,7 @@ const ChatPage: React.FC = () => {
 
     const msg: Message = { senderId: userId, receiverId, text: input };
     socket.emit("send_message", { ...msg, chatId });
+    console.log("Sent message to chat room , msg:", msg);
     setMessages((prev) => [...prev, msg]);
     setInput("");
   };
@@ -118,7 +119,6 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className={styles.chatContainer}>
-      <h2 className={styles.header}>Chat</h2>
 
       <div ref={chatBoxRef} className={styles.chatBox}>
         {messages.map((msg, idx) => (

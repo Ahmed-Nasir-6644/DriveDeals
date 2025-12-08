@@ -1,28 +1,47 @@
 .chatContainer {
-  height: 100vh;
+  max-width: 600px; /* Compress width */
+  margin: 2rem auto; /* Center horizontally */
   display: flex;
   flex-direction: column;
-  background: #f0f2f5;
+  height: 80vh; /* Take most of the viewport height */
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fafafa;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
 }
+
 
 .header {
   padding: 1rem;
   font-size: 1.5rem;
-  font-weight: 600;
-  background: #0652a9;
-  color: white;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
   text-align: center;
 }
 
 .chatBox {
   flex: 1;
   padding: 1rem;
+  overflow-y: auto;
+  background-color: #f4f4f8;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  gap: 0.5rem;
 }
+
+.myMessage {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px 12px 0 12px;
+  max-width: 70%;
+  word-break: break-word;
+}
+
 
 .message {
   max-width: 60%;
@@ -55,60 +74,58 @@
   margin-top: 3px;
 }
 
+
 .inputArea {
   display: flex;
-  padding: 0.8rem;
   gap: 0.5rem;
-  background: white;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
 }
 
 .input {
   flex: 1;
-  padding: 0.8rem;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-  resize: none;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
   outline: none;
+  font-size: 1rem;
+  transition: all 0.2s;
 }
 
+.input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+
 .sendBtn {
-  background: #0652a9;
-  color: white;
+  padding: 0 1rem;
   border: none;
-  padding: 0.8rem 1.4rem;
-  font-size: 1rem;
-  border-radius: 12px;
+  border-radius: 20px;
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
-  transition: 0.25s;
+  font-weight: bold;
+  transition: all 0.2s;
 }
 
 .sendBtn:hover {
-  background: #2534b3;
+  background-color: #0056b3;
 }
 
-
-.myMessage {
-  background: #2563eb;
-  color: white;
-  margin-left: auto;
-  border-radius: 18px 6px 18px 18px;
-  padding: 0.8rem 1rem;
-  max-width: 60%;
-  transition: transform 0.2s ease;
-}
 
 .theirMessage {
-  background: #7ba0ea;
-  color: #1f2937;
-  margin-right: auto;
-  border-radius: 6px 18px 18px 18px;
-  padding: 0.8rem 1rem;
-  max-width: 60%;
-  transition: transform 0.2s ease;
+  align-self: flex-start;
+  background-color: #e5e5ea;
+  color: black;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px 12px 12px 0;
+  max-width: 70%;
+  word-break: break-word;
 }
-
 .myMessage:hover, .theirMessage:hover {
   transform: scale(1.02);
 }
