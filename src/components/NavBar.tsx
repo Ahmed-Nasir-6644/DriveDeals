@@ -59,11 +59,10 @@ export default function Navbar() {
             </button>
             {dropdownOpen && (
               <div className={styles.dropdown}>
-                <Link to="/profile" className={styles.dropdownItem} onClick={() => setMenuOpen(false)}>
+                <Link to="/profile" className={styles.dropdownItem} onClick={() => {setMenuOpen(false);
+                  setDropdownOpen(!dropdownOpen);
+                }} >
                   <FaUser /> My Profile
-                </Link>
-                <Link to="/settings" className={styles.dropdownItem} onClick={() => setMenuOpen(false)}>
-                  <FaCog /> Settings
                 </Link>
                 <div className={styles.dropdownDivider}></div>
                 <Link to="/"
