@@ -49,6 +49,104 @@
     filter: brightness(1) blur(1px);
   }
 }
+
+/* AUCTION ENDED Banner Styles */
+.auctionEndedBanner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  z-index: 3;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #172554 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 rgba(30, 64, 175, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(147, 197, 253, 0.5);
+  animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.auctionEndedContent {
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.auctionEndedTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #fbbf24 0%, #f59e42 50%, #facc15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+}
+
+.auctionEndedText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a5f3fc;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.winningBid {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 12px 0;
+  letter-spacing: 0.02em;
+}
+
+.auctionEndedSubtext {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e0e7ff;
+  margin: 12px 0 0 0;
+  letter-spacing: 0.03em;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.auctionClosedMessage {
+  padding: 20px;
+  text-align: center;
+  background: #fee2e2;
+  border: 2px solid #fca5a5;
+  border-radius: 8px;
+}
+
+.closedText {
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
 .container {
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

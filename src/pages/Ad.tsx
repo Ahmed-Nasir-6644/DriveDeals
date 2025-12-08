@@ -63,6 +63,8 @@ export default function AdDetailPage() {
   const [showNewBidBanner, setShowNewBidBanner] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [recsLoading, setRecsLoading] = useState(false);
+  const [auctionEnded, setAuctionEnded] = useState(false);
+  const [placingBid, setPlacingBid] = useState(false);
 
   useEffect(() => {
 
@@ -209,8 +211,10 @@ export default function AdDetailPage() {
       const diff = end!.getTime() - Date.now();
       if (diff <= 0) {
         setTimeLeft("Auction ended");
+        setAuctionEnded(true);
         return;
       }
+      setAuctionEnded(false);
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -234,8 +238,28 @@ export default function AdDetailPage() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return alert("You must be logged in to place a bid");
-    setError(null);
-    setSuccess(null);
+    
+    if (!ad) return;
+    
+  setError(null);
+  setSuccess(null);
+  setPlacingBid(true);
+
+    // Check if auction has ended
+    let end = null as Date | null;
+    // @ts-ignore
+    if (ad.auction_ends_at) { 
+      // @ts-ignore
+      end = new Date(ad.auction_ends_at);
+    } else {
+      end = new Date(ad.created_at);
+      end.setHours(end.getHours() + 24);
+    }
+    
+    if (end && end.getTime() <= Date.now()) {
+      setError("This auction has ended. No new bids can be placed.");
+      return;
+    }
 
     if (newBid === "") {
       setError(`Please enter a bid of at least ${minBid}`);
@@ -253,7 +277,7 @@ export default function AdDetailPage() {
       const res = await fetch(`http://localhost:3000/bids/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adId: id, user, amount: val })
+        body: JSON.stringify({ adId: id, token, amount: val })
       });
       if (!res.ok) throw new Error("Failed to place bid");
       setSuccess("Bid placed successfully");
@@ -269,8 +293,9 @@ export default function AdDetailPage() {
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError("Failed to place bid. Try again.");
+    } finally {
+      setPlacingBid(false);
     }
-
   }
 
   if (loading) return <p className={styles.message}>Loading...</p>;
@@ -385,6 +410,19 @@ Posted On: ${new Date(ad.created_at).toDateString()}
             <span className={styles.newBidText}>NEW BID!</span>
           </div>
         )}
+        
+        {/* AUCTION ENDED Banner */}
+        {auctionEnded && bids.length > 0 && (
+          <div className={styles.auctionEndedBanner}>
+            <div className={styles.auctionEndedContent}>
+              <h2 className={styles.auctionEndedTitle}>🎉 Auction Ended 🎉</h2>
+              <p className={styles.auctionEndedText}>Highest Bid</p>
+              <p className={styles.winningBid}>PKR {highestBid} lacs</p>
+              <p className={styles.auctionEndedSubtext}>Congratulations to the winner!</p>
+            </div>
+          </div>
+        )}
+        
         <div className={styles.bidHeader}>
           <h2>Live Auction</h2>
           <div className={styles.timer} aria-live="polite">{timeLeft}</div>
@@ -429,27 +467,35 @@ Posted On: ${new Date(ad.created_at).toDateString()}
 
           <div className={styles.placeBid}>
             <h3>Place a New Bid</h3>
-            <form onSubmit={handlePlaceBid} className={styles.bidForm}>
-              <label className={styles.minNote}>
-                Minimum bid: <strong>{minBid} lacs</strong>
-              </label>
-              <input
-                type="number"
-                step={0.1}
-                min={minBid}
-                value={newBid}
-                onChange={(e) => setNewBid(e.target.value === "" ? "" : Number(e.target.value))}
-                className={styles.bidInput}
-                aria-label="Enter your bid in lacs"
-              />
-
-              <div className={styles.formRow}>
-                <button type="submit" className={styles.bidButton}>Place bid</button>
+            {auctionEnded ? (
+              <div className={styles.auctionClosedMessage}>
+                <p className={styles.closedText}>This auction has ended</p>
               </div>
+            ) : (
+              <form onSubmit={handlePlaceBid} className={styles.bidForm}>
+                <label className={styles.minNote}>
+                  Minimum bid: <strong>{minBid} lacs</strong>
+                </label>
+                <input
+                  type="number"
+                  step={0.1}
+                  // min={minBid}
+                  // value={newBid}
+                  onChange={(e) => setNewBid(e.target.value === "" ? "" : Number(e.target.value))}
+                  className={styles.bidInput}
+                  aria-label="Enter your bid in lacs"
+                />
 
-              {error && <div className={styles.error}>{error}</div>}
-              {success && <div className={styles.success}>{success}</div>}
-            </form>
+                <div className={styles.formRow}>
+                  <button type="submit" className={styles.bidButton} disabled={placingBid}>
+                    {placingBid ? "Placing Bid..." : "Place bid"}
+                  </button>
+                </div>
+
+                {error && <div className={styles.error}>{error}</div>}
+                {success && <div className={styles.success}>{success}</div>}
+              </form>
+            )}
           </div>
         </div>
       </section>
