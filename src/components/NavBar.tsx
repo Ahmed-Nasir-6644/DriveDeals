@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/Navbar.module.css"; // adjust path if needed
-import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo2.png";
 

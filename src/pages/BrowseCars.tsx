@@ -89,7 +89,6 @@ export default function BrowseCars() {
     bodyTypes,
     registeredIns,
     years,
-    featuresOptions,
     priceRange,
     mileageRange,
   } = useMemo(() => {
