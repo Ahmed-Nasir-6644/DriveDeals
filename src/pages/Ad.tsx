@@ -6,7 +6,7 @@ import ChatButton from "../components/chatButton";
 import { useAuth } from "../context/AuthContext";
 // socket client
 import { io } from "socket.io-client";
-const socket = io("http://localhost:3000");
+const socket = io(`${import.meta.env.VITE_BACKEND_URL}`);
 
 interface Ad {
   id: number;
@@ -76,7 +76,7 @@ export default function AdDetailPage() {
   useEffect(() => {
     if (!email) return;
 
-    fetch(`http://localhost:3000/users/get-by-email?email=${email}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/users/get-by-email?email=${email}`)
       .then((res) => res.json())
       .then((user) => setLoggedInUserId(user.id))
       .catch((err) => console.error("Error fetching logged-in user:", err));
@@ -85,7 +85,7 @@ export default function AdDetailPage() {
   useEffect(() => {
     async function fetchAd() {
       try {
-        const res = await fetch(`http://localhost:3000/ads/get/adById/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/ads/get/adById/${id}`);
         if (!res.ok) throw new Error("Failed to fetch ad");
         const data = await res.json();
         let parsedFeatures: string[] = [];
@@ -134,7 +134,7 @@ export default function AdDetailPage() {
 
         console.log("Sending payload to recommendation API:", payload);
 
-        const res = await fetch("http://localhost:5000/recommend", {
+        const res = await fetch(`${import.meta.env.VITE_RECOMMEND_SERVICE_URL}/recommend`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -168,7 +168,7 @@ export default function AdDetailPage() {
       if (!id) return;
       setBidsLoading(true);
       try {
-        const res = await fetch(`http://localhost:3000/bids/get/byAd/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/bids/get/byAd/${id}`);
         if (!res.ok) throw new Error("Failed to fetch bids");
         const data = await res.json();
         // Expecting array of { user, amount, time }
@@ -297,10 +297,10 @@ export default function AdDetailPage() {
 
     const user = "You"; // Placeholder: replace with logged-in user's name when available
     try {
-      const res = await fetch(`http://localhost:3000/bids/create`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/bids/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adId: id, user, amount: val })
+        body: JSON.stringify({ adId: id, token, amount: val })
       });
       if (!res.ok) throw new Error("Failed to place bid");
       setSuccess("Bid placed successfully");
@@ -313,7 +313,7 @@ export default function AdDetailPage() {
         time: Date.now(),
       });
       // Refresh bids
-      const bidsRes = await fetch(`http://localhost:3000/bids/get/byAd/${id}`);
+      const bidsRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/bids/get/byAd/${id}`);
       if (bidsRes.ok) {
         const data = await bidsRes.json();
         setBids(Array.isArray(data) ? data : []);
@@ -609,7 +609,7 @@ Posted On: ${new Date(ad.created_at).toDateString()}
           Posted on {new Date(ad.created_at).toDateString()}
         </p>
         <button className={styles.pdfButton} onClick={downloadPDF}>
-          Download Ad
+         ⬇️ Download Ad
         </button>
         {loggedInUserId && ad.owner.id !== loggedInUserId && (
           <ChatButton ownerId={ad.owner.id} />

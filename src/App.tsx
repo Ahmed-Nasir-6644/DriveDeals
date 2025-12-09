@@ -13,7 +13,7 @@ import MyAdsPage from "./pages/Myads";
 import AboutUs from "./pages/AboutUS";
 import MyBids from "./pages/MyBids";
 import ProfilePage from "./pages/Profile";
-import ChatList from "./pages/chatList";
+import ChatList from "./pages/ChatList";
 import ChatPage from "./pages/ChatPage";
 
 function App() {

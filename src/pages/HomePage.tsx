@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
   const [recentAds, setRecentAds] = useState<Ad[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/ads/get/ads")
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/ads/get/ads`)
       .then((res) => res.json())
       .then((data) => {
         const sorted = data

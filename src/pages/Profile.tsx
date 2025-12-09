@@ -44,7 +44,7 @@ const ChangePasswordModal = memo(function ChangePasswordModal({
 
     try {
       setRequestLoading(true);
-      const res = await fetch("http://localhost:3000/auth/request-password-change", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/request-password-change`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -236,7 +236,7 @@ const ProfilePage = memo(function ProfilePage() {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:3000/user-profile/get", {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user-profile/get`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -281,7 +281,7 @@ const ProfilePage = memo(function ProfilePage() {
       formData.append("file", file);
       
       // Call API to update profile picture with file upload
-      const res = await fetch("http://localhost:3000/user-profile/update-picture", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user-profile/update-picture`, {
         method: "POST",
         body: formData,
         // Do not set Content-Type header; browser will set it automatically with boundary
@@ -316,7 +316,7 @@ const ProfilePage = memo(function ProfilePage() {
       setError("");
       setMessage("");
 
-      const res = await fetch("http://localhost:3000/auth/verify-otp-and-change-password", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/verify-otp-and-change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -351,7 +351,7 @@ const ProfilePage = memo(function ProfilePage() {
       setMessage("");
       setError("");
 
-      const res = await fetch("http://localhost:3000/users/update-name", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/update-name`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

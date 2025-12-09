@@ -70,7 +70,7 @@ export default function MyAdsPage() {
   // Fetch ads
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/ads/get/adsByOwner", {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/ads/get/adsByOwner`, {
       method: "GET",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     })
@@ -95,7 +95,7 @@ export default function MyAdsPage() {
     try {
       setDeleteLoading(true);
       setDeleteError("");
-      const res = await fetch(`http://localhost:3000/ads/delete/${deleteTarget.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/ads/delete/${deleteTarget.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -126,7 +126,7 @@ export default function MyAdsPage() {
       });
       newAd.files.forEach((file) => formData.append("files", file));
 
-      const res = await fetch("http://localhost:3000/ads/post-ad", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/ads/post-ad`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

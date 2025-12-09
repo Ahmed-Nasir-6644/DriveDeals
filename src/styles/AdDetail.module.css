@@ -614,7 +614,10 @@
 .pdfButton:hover {
   background: #1d4ed8;
 }
-
+/*user chat*/
+.chatButton{
+  
+}
 
 /* Recommendations Section */
 .recommendationsSection {

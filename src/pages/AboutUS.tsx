@@ -1,4 +1,6 @@
 import styles from "../styles/AboutUs.module.css";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
+import { SiGmail } from "react-icons/si";
 
 export default function AboutUs() {
   return (
@@ -13,12 +15,10 @@ export default function AboutUs() {
         <h2>Our Services</h2>
         <ul>
           <li>Browse thousands of car listings across Pakistan.</li>
-          <li>
-            Post your car for sale with detailed specifications and images.
-          </li>
+          <li>Post your car for sale with detailed specifications and images.</li>
           <li>Get AI-powered recommended cars based on your preferences.</li>
           <li>Secure messaging between buyers and sellers.</li>
-          <li>Track your ads and bids easily through your dashboard.</li>
+          <li>Track your ads and bids easily through your email notifications.</li>
         </ul>
       </section>
 
@@ -40,18 +40,55 @@ export default function AboutUs() {
       <section className={styles.team}>
         <h2>Meet Our Developers</h2>
         <div className={styles.teamGrid}>
+
+          {/* Ahmed */}
           <div className={styles.teamMember}>
             <h3>Ahmed Nasir</h3>
-            <p>ahmednasir1212a@gmail.com</p>
+            <div className={styles.socialLinks}>
+              <a href="mailto:ahmednasir1212a@gmail.com" target="_blank">
+                <SiGmail />
+              </a>
+              <a href="https://www.instagram.com/ahmednasir2003?igsh=MmZhZDQ1b3AwcDd6" target="_blank">
+                <FaInstagram />
+              </a>
+              <a href="https://linkedin.com/" target="_blank">
+                <FaLinkedin />
+              </a>
+            </div>
           </div>
+
+          {/* Shahzaib */}
           <div className={styles.teamMember}>
             <h3>Shahzaib Bukhari</h3>
-            <p>shahzaibbukhari2004@gmail.com</p>
+            <div className={styles.socialLinks}>
+              <a href="mailto:shahzaibbukhari2004@gmail.com" target="_blank">
+                <SiGmail />
+              </a>
+              <a href="https://www.instagram.com/syed_shahzaib_sh?igsh=MXY5dTcyM3JkN2FxZw==" target="_blank">
+                <FaInstagram />
+              </a>
+              <a href="https://linkedin.com/" target="_blank">
+                <FaLinkedin />
+              </a>
+            </div>
           </div>
+
+          {/* Aanish */}
           <div className={styles.teamMember}>
             <h3>Aanish Waseem</h3>
-            <p>aanish.waseem116@gmail.com</p>
+            <div className={styles.socialLinks}>
+              <a href="mailto:aanish.waseem116@gmail.com" target="_blank">
+                <SiGmail />
+              </a>
+              <a href="https://www.instagram.com/aanish808._?igsh=MXB6ZGt2N2hieHhmaQ==" target="_blank">
+                <FaInstagram />
+              </a>
+              <a href="https://linkedin.com/" target="_blank">
+                <FaLinkedin />
+              </a>
+            </div>
           </div>
+
         </div>
       </section>
     </main>

@@ -31,7 +31,7 @@ const ChatPage: React.FC = () => {
 
     const fetchUserId = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/users/get-by-email?email=${email}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/get-by-email?email=${email}`);
         const user = await res.json();
         setUserId(user.id);
       } catch (err) {
@@ -51,7 +51,7 @@ const ChatPage: React.FC = () => {
 
   // ---------------- SOCKET INIT ----------------
   useEffect(() => {
-    const newSocket: Socket = io("http://localhost:3000", { transports: ["websocket"] });
+    const newSocket: Socket = io(`${import.meta.env.VITE_BACKEND_URL}`, { transports: ["websocket"] });
     setSocket(newSocket);
 
     return () => {
@@ -88,7 +88,7 @@ const ChatPage: React.FC = () => {
 
     const fetchHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/chat/history?user1=${userId}&user2=${receiverId}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/chat/history?user1=${userId}&user2=${receiverId}`);
         const msgs: Message[] = await res.json();
         setMessages(msgs);
       } catch (err) {

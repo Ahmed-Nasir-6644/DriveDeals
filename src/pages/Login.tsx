@@ -35,7 +35,7 @@ const ForgotPasswordModal = memo(function ForgotPasswordModal({
 
     try {
       setRequestLoading(true);
-      const res = await fetch("http://localhost:3000/auth/request-password-change", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/request-password-change`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -77,7 +77,7 @@ const ForgotPasswordModal = memo(function ForgotPasswordModal({
 
     try {
       setRequestLoading(true);
-      const res = await fetch("http://localhost:3000/auth/verify-otp-and-change-password", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/verify-otp-and-change-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -259,7 +259,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/auth/login-step1", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login-step1`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -286,7 +286,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/auth/login-step2", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login-step2`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tempToken, otp }),

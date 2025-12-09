@@ -36,7 +36,7 @@ const MyBids = () => {
 
   useEffect(() => {
   const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/bids/getMyBids", {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/bids/getMyBids`, {
       method: "GET",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     })

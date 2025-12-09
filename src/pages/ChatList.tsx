@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "../styles/ChatList.module.css";
 import { useAuth } from "../context/AuthContext";
 import {io} from "socket.io-client"
-const socket = io("http://localhost:3000")
+const socket = io(`${import.meta.env.VITE_BACKEND_URL}`)
 
 interface Chat {
   chatId: string;
@@ -31,7 +31,7 @@ const ChatList: React.FC = () => {
   // Get logged-in user ID
   useEffect(() => {
     if (!email) return;
-    fetch(`http://localhost:3000/users/get-by-email?email=${email}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/users/get-by-email?email=${email}`)
       .then((res) => res.json())
       .then((data) => setUserId(data.id))
       .catch((err) => console.error("Error fetching user:", err));
@@ -41,7 +41,7 @@ const ChatList: React.FC = () => {
   useEffect(() => {
     if (!userId) return;
 
-    fetch(`http://localhost:3000/chat/user-chats?userId=${userId}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/chat/user-chats?userId=${userId}`)
       .then((res) => res.json())
       .then((messages: Message[]) => {
         const convMap: Record<number, Message> = {};

@@ -2,7 +2,7 @@
 .container {
   min-height: 100vh;
   background: #f9fafb;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #1f2937;
 }
 
@@ -28,12 +28,15 @@
 }
 
 /* Services Section */
-.services, .location, .team {
-
+.services,
+.location,
+.team {
   margin: 3rem 7rem;
 }
 
-.services h2, .location h2, .team h2 {
+.services h2,
+.location h2,
+.team h2 {
   font-size: 2.2rem;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -41,8 +44,10 @@
   position: relative;
 }
 
-.services h2::after, .location h2::after, .team h2::after {
-  content: '';
+.services h2::after,
+.location h2::after,
+.team h2::after {
+  content: "";
   display: block;
   width: 60px;
   height: 4px;
@@ -76,13 +81,13 @@
   margin-top: 1rem;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .mapContainer:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
 /* Team Section */
@@ -101,7 +106,7 @@
   padding: 2rem 1.5rem;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
   cursor: pointer;
   position: relative;
@@ -109,7 +114,7 @@
 
 .teamMember:hover {
   transform: translateY(-10px);
-  box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
   background: #f0f8ff;
 }
 
@@ -130,6 +135,24 @@
   color: #4facfe;
 }
 
+.socialLinks {
+  justify-content: center;
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+}
+
+.socialLinks a {
+  font-size: 1.5rem;
+  color: #555;
+  transition: 0.2s ease;
+}
+
+.socialLinks a:hover {
+  color: #0077b5; /* LinkedIn blue; looks good on both icons */
+  transform: scale(1.1);
+}
+
 /* Animations */
 @keyframes fadeInUp {
   to {
@@ -143,7 +166,9 @@
   .header h1 {
     font-size: 2.4rem;
   }
-  .services h2, .location h2, .team h2 {
+  .services h2,
+  .location h2,
+  .team h2 {
     font-size: 1.8rem;
   }
 }

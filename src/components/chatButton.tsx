@@ -17,7 +17,7 @@ const ChatButton: React.FC<ChatButtonProps> = ({ ownerId }) => {
   useEffect(() => {
     if (!email) return;
 
-    fetch(`http://localhost:3000/users/get-by-email?email=${email}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/users/get-by-email?email=${email}`)
       .then((res) => res.json())
       .then((data) => setLoggedInUserId(data.id))
       .catch((err) => console.error("Error fetching logged-in user:", err));
@@ -37,7 +37,7 @@ const ChatButton: React.FC<ChatButtonProps> = ({ ownerId }) => {
 
   return (
     <button className={styles.chatButton} onClick={handleClick}>
-      Chat with Seller
+    💬 Chat with Seller
     </button>
   );
 };
